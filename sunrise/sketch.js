@@ -34,10 +34,10 @@ function setup()
 	tree = {
 		x: 173,
 		y: groundHeight + 20,
-		trunkWidth: 30,
+		trunkWidth: 20,
 		trunkHeight: 150,
-		canopyWidth: 120,
-		canopyHeight: 150
+		canopyWidth: 130,
+		canopyHeight: 160
 	};
 
     //initalise the sun 
@@ -129,7 +129,7 @@ function draw()
     fill(max(70, 128-darkness),0,0); 
     rect(tree.x,tree.y,tree.trunkWidth,tree.trunkHeight);
     fill(0,max(80,144-darkness),48-darkness);
-    ellipse(tree.x, tree.y, tree.canopyWidth, tree.canopyHeight);
+    ellipse(tree.x+7, tree.y, tree.canopyWidth, tree.canopyHeight);
     
     
     //cloud1
