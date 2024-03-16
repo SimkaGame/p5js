@@ -121,7 +121,7 @@ function draw()
     
 
     //shadow cloud2
-    fill(26,52,58);
+    fill(26,52,58,250);
     ellipse(cloud2.x_1+mouseX/8,cloud2.y_1*14,cloud2.diameter*1.4);
     ellipse(cloud2.x_2+mouseX/8,cloud2.y_2*16,cloud2.diameter*1.1);
     ellipse(cloud2.x_3+mouseX/8,cloud2.y_3*13.9,cloud2.diameter);
