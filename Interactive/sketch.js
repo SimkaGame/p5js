@@ -27,7 +27,7 @@ var tree;
 var groundHeight;
 var treeHeight;
 var diamond;
-var canyon
+var canyon;
 
 
 function setup()
@@ -129,13 +129,13 @@ function draw()
 
 	//canyon_left
     fill(65,18,18);
-    rect(401,432,20,180)
+    rect(401,432,20,50)
     //canyon_middle
     fill(0,0,0);
-    rect(421,432,45,180)
+    rect(421,432,45,50)
     //canyon_left
     fill(65,18,18);
-    rect(465,432,20,180)
+    rect(465,432,20,50)
     
     
     fill(139, 69, 19);
@@ -249,6 +249,14 @@ function draw()
 		
 
 	}
+    
+    if ((419 > gameChar_x || gameChar_x < 450) && (419 < gameChar_x || gameChar_x > 450)) {
+		gameChar_y = 480;
+
+    }
+    else {
+        gameChar_y = groundHeight+20;
+    }
 
 	///////////INTERACTION CODE//////////
 	//Put conditional statements to move the game character below here
@@ -267,6 +275,7 @@ function keyPressed()
     if (keyCode == 32){
         isFalling = true;
     }
+
 	// if statements to control the animation of the character when
 	// keys are pressed.
 
