@@ -119,9 +119,9 @@ function draw()
     fill(65,18,18);
     rect(465,432,20,50)
     
+    drawCloud();
     drawMountain();
     drawTree();
-    drawCloud();
     drawDiamond();
     checkCoins(position);
     moveSun();
@@ -328,10 +328,10 @@ function drawTree(){
         
     
         translate(tree.x, tree.y);
-        scale(1);
+        scale(0.5);
 
         fill(139, 69, 19);
-        rect(0,0, tree.trunkWidth, tree.trunkHeight);
+        rect(0,0, tree.trunkWidth, tree.trunkHeight+16);
 
         fill(50, 190, 50);
         triangle(- 80,0,0, - 150,120,0);
@@ -525,7 +525,7 @@ function drawJumpingFront() {
     push();
     
     translate(gameChar_x,gameChar_y);
-    scale(1);
+    scale(7);
     
     fill(218,169,193);
     ellipse(0,-60,30,30);
