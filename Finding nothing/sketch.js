@@ -7,12 +7,14 @@ var clicks = 0;
 var stage = 1;
 var textOn;
 var point;
+var distance;
 
 
 function setup()
 {
     createCanvas(800, 600);
 	map = loadImage("map.jpg");
+    
 
 	treasureX = random(230, 500);
 	treasureY = random(100, 330);
@@ -42,8 +44,11 @@ function draw()
 {
     
 	image(map, 0, 0, width, height);
-    fill(color.r,color.g,color.b);
-    text('The proximity indicator',30,520);
+    
+    distance = Math.sqrt((treasureX-mouseX)**2+(treasureY-mouseY)**2)    
+    stroke(0); 
+    fill(distance, 255-distance, 0);	
+    ellipse(mouseX, mouseY, 10,10);
     
 	fill(0);
     
@@ -62,7 +67,8 @@ function draw()
     text(clicks, 680, 560);
     textAlign(LEFT);
 	textSize(40);
-	text("Count clicks " + message, 615, 500);
+	text("Count clicks ", 610, 500);
+    text(message, 15,60);
     
     
     
@@ -80,22 +86,22 @@ function draw()
 	gameChar_y = 137;
     //head
 	fill(218,169,193)
-    ellipse(mouseX,mouseY-50,30,30);
+    ellipse(mouseX,mouseY-60,30,30);
     //body
     fill(155,79,79)
-    rect(mouseX-10,mouseY-35,20,22)
+    rect(mouseX-10,mouseY-45,20,22)
     //arm_left
     fill(151,38,38)
-    rect(mouseX-20,mouseY-35,10,15)
+    rect(mouseX-20,mouseY-45,10,15)
     //arm_right
     fill(151,38,38)
-    rect(mouseX+10,mouseY-35,10,15)
+    rect(mouseX+10,mouseY-45,10,15)
     //leg_right
     fill(151,38,38)
-    rect(mouseX+2,mouseY-13,8,15)
+    rect(mouseX+2,mouseY-23,8,15)
     //leg_left
     fill(151,38,38)
-    rect(mouseX-10,mouseY-13,8,15)
+    rect(mouseX-10,mouseY-23,8,15)
     
     //point
     fill(0,0,0,0)
