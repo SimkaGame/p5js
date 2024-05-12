@@ -45,7 +45,7 @@ function setup()
 	createCanvas(1024*1.5, 576);
 	floorPos_y = height * 3/4;
 	gameChar_x = width/4;
-	gameChar_y = floorPos_y;
+	gameChar_y = floorPos_y-3;
     speed = 4;
     jumpSpeed = 10;
     JUMPSPEED = 10;
@@ -60,10 +60,6 @@ function setup()
     counter = 0;
     
     
-    canyon = {
-    x1:400,
-    y1:500
-    };
     
     //diamond
     position = {
@@ -109,22 +105,13 @@ function draw()
 	fill(0,155,0);
 	rect(0, floorPos_y, width, height - floorPos_y);
     
-	//canyon_left
-    fill(65,18,18);
-    rect(401,432,20,50)
-    //canyon_middle
-    fill(0,0,0);
-    rect(421,432,45,50)
-    //canyon_left
-    fill(65,18,18);
-    rect(465,432,20,50)
-    
     drawCloud();
     drawMountain();
     drawTree();
     drawDiamond();
     checkCoins(position);
     moveSun();
+    drawCanyon();
     
     if (viewTime && textTimer < 50){
         fill('yellow');
@@ -170,7 +157,7 @@ function moveLogic()
         drawGoLeft();
 		isInCanyon();
         stopLeft();
-        if (gameChar_x > 419 && gameChar_x < 450){
+        if (gameChar_x > 421 && gameChar_x < 462){
         gameChar_y = floorPos_y + 48;
     } else {
         gameChar_y = floorPos_y;
@@ -181,7 +168,7 @@ function moveLogic()
         drawGoRight();
         gameChar_x += speed;
         isInCanyon();
-        if (gameChar_x > 419 && gameChar_x < 450){
+        if (gameChar_x > 421 && gameChar_x < 462){
         gameChar_y = floorPos_y + 48;
     } else {
         gameChar_y = floorPos_y;
@@ -245,6 +232,24 @@ function isInCanyon() {
     }
 }
 
+function drawCanyon(){
+    
+    canyon = {
+    x1:400,
+    y1:500
+    };
+    
+    //canyon_left
+    fill(65,18,18);
+    rect(401,432,20,50)
+    //canyon_middle
+    fill(0,0,0);
+    rect(421,432,45,50)
+    //canyon_left
+    fill(65,18,18);
+    rect(465,432,20,50)
+}
+
 function keyPressed()
 {
     if (keyCode == 68){
@@ -306,12 +311,13 @@ function moveSun(){
         sky.g = 56;
         sky.b = 97;
     }
+    //остальные значения(День)
 }
 
 
 function drawTree(){
     
-    treeCoor_x = [200,600,850,1300];
+    treeCoor_x = [50,250,400,590,720,850,990,1100,1250,1300];
     
     for (var i = 0; i < treeCoor_x.length; i++){
         
@@ -328,10 +334,10 @@ function drawTree(){
         
     
         translate(tree.x, tree.y);
-        scale(0.5);
+        scale(0.7);
 
         fill(139, 69, 19);
-        rect(0,0, tree.trunkWidth, tree.trunkHeight+16);
+        rect(0,0, tree.trunkWidth, tree.trunkHeight+6);
 
         fill(50, 190, 50);
         triangle(- 80,0,0, - 150,120,0);
@@ -408,7 +414,6 @@ function drawDiamond() {
 		down_y: position.pos_y + 30 * position.scale
 	};
     
-    
 	fill(30, 144, 255);
 	triangle(diamond.up_1x, diamond.up_y, diamond.midl_2x, diamond.midl_y, diamond.up_2x, diamond.up_y);
 	triangle(diamond.up_2x, diamond.up_y, diamond.midl_3x, diamond.midl_y, diamond.up_3x, diamond.up_y);
@@ -449,7 +454,7 @@ function drawJumpingLeft() {
     push();
     
     translate(gameChar_x,gameChar_y);
-    scale(1);
+    scale(7);
     
     fill(218,169,193)
     ellipse(0,-60,30,30);
@@ -472,7 +477,7 @@ function drawJumpingRight() {
     push();
     
     translate(gameChar_x,gameChar_y);
-    scale(1);
+    scale(7);
     
     fill(218,169,193);
     ellipse(0,-60,30,30);
