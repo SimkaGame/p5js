@@ -1,135 +1,130 @@
 var rocket; 
 var baseLine;
-var color;
+var stars = [];
+var planets = [];
+var rocketLayer;
 
-function setup()
-{
-     createCanvas(800, 600);
-    background(10);
-    
-    //stars
+function setup(){
+    createCanvas(800, 600);
+    baseLine = height - 100;
+
+    rocketLayer = createGraphics(width, height);
+    rocketLayer.clear();
+
+    // Создаем звезды
     for (var i = 0; i < 500; i++) {
-        fill(255);
-        ellipse(random(0,width), random(0,height), 3,3);
+        stars.push({
+            x: random(0, width),
+            y: random(0, height),
+            size: 3
+        });
     }
-    //planets
-    
-    for (var i = 0; i < 10; i++) {
-        fill(random(0,255),random(0,255),random(0,255));
-        ellipse(random(0,width), random(0,height),random(10,100));
-    }
-    
-    baseLine = height - 100
 
-     rocket =    {
-        x: width/2,
-        y: baseLine, 
+    // Создаем планеты
+    for (var i = 0; i < 10; i++) {
+        planets.push({
+            x: random(0, width),
+            y: random(0, height),
+            size: random(10, 100),
+            color: color(random(0, 255), random(0, 255), random(0, 255))
+        });
+    }
+
+    rocket = {
+        x: width / 2,
+        y: baseLine,
         thrust: false, 
         moveLeft: false,
         moveRight: false,
-        drawRocket: function(){
-            fill(180)
-            beginShape();
-            vertex(rocket.x + 10, rocket.y + 60);
-            vertex(rocket.x + 10, rocket.y + 20);
-            vertex(rocket.x + 15, rocket.y);
-            vertex(rocket.x + 20, rocket.y + 20);
-            vertex(rocket.x + 20, rocket.y + 60);
-            endShape(CLOSE);
+        drawRocket: function() {
+            rocketLayer.fill(180);
+            rocketLayer.beginShape();
+            rocketLayer.vertex(this.x + 10, this.y + 60);
+            rocketLayer.vertex(this.x + 10, this.y + 20);
+            rocketLayer.vertex(this.x + 15, this.y);
+            rocketLayer.vertex(this.x + 20, this.y + 20);
+            rocketLayer.vertex(this.x + 20, this.y + 60);
+            rocketLayer.endShape(CLOSE);
 
-            fill(255, 0, 100);
-            beginShape();
-            vertex(rocket.x - 10, rocket.y + 70);
-            vertex(rocket.x + 10, rocket.y + 40);
-            vertex(rocket.x + 10, rocket.y + 60);
-            endShape(CLOSE);
+            rocketLayer.fill(255, 0, 100);
+            rocketLayer.beginShape();
+            rocketLayer.vertex(this.x - 10, this.y + 70);
+            rocketLayer.vertex(this.x + 10, this.y + 40);
+            rocketLayer.vertex(this.x + 10, this.y + 60);
+            rocketLayer.endShape(CLOSE);
 
-            beginShape();
-            vertex(rocket.x + 40, rocket.y + 70);
-            vertex(rocket.x + 20, rocket.y + 40);
-            vertex(rocket.x + 20, rocket.y + 60);
-            endShape(CLOSE);
+            rocketLayer.beginShape();
+            rocketLayer.vertex(this.x + 40, this.y + 70);
+            rocketLayer.vertex(this.x + 20, this.y + 40);
+            rocketLayer.vertex(this.x + 20, this.y + 60);
+            rocketLayer.endShape(CLOSE);
 
-            if (rocket.thrust)
-            {
-                fill(255, 150, 0);
-                beginShape();
-                vertex(rocket.x + 10, rocket.y + 60);
-                vertex(rocket.x + 13, rocket.y + 80);
-                vertex(rocket.x + 15, rocket.y + 70);
-                vertex(rocket.x + 18, rocket.y + 80);
-                vertex(rocket.x + 20, rocket.y + 60);
-                endShape(CLOSE);
+            if (this.thrust) {
+                rocketLayer.fill(255, 150, 0);
+                rocketLayer.beginShape();
+                rocketLayer.vertex(this.x + 10, this.y + 60);
+                rocketLayer.vertex(this.x + 13, this.y + 80);
+                rocketLayer.vertex(this.x + 15, this.y + 70);
+                rocketLayer.vertex(this.x + 18, this.y + 80);
+                rocketLayer.vertex(this.x + 20, this.y + 60);
+                rocketLayer.endShape(CLOSE);
             }
-                }
+        }
     };
-    
 }
-function draw()
-{
-    //move the rocket
-    if (rocket.thrust && rocket.y > 0)
-	{
-		rocket.y -= 10;
-	}
-	else if (rocket.y < baseLine)
-	{
-		rocket.y += 5;
-	}
 
-	if (rocket.moveLeft && rocket.x > 0 && rocket.y != baseLine)
-	{
-		rocket.x -= 10;
-	}
+function draw() {
+    background(10);
 
-	if (rocket.moveRight && rocket.x < width && rocket.y != baseLine)
-	{
-		rocket.x += 10;
-	}
-    
-  //draw the rocket
-    
-    
+    fill(255);
+    for (var i = 0; i < stars.length; i++) {
+        ellipse(stars[i].x, stars[i].y, stars[i].size, stars[i].size);
+    }
 
-    
+    for (var i = 0; i < planets.length; i++) {
+        fill(planets[i].color);
+        ellipse(planets[i].x, planets[i].y, planets[i].size, planets[i].size);
+    }
+
+    rocketLayer.clear();
+
+    if (rocket.thrust && rocket.y > 0) {
+        rocket.y -= 10;
+    } else if (rocket.y < baseLine) {
+        rocket.y += 5;
+    }
+    if (rocket.moveLeft && rocket.x > 0 && rocket.y != baseLine) {
+        rocket.x -= 10;
+    }
+    if (rocket.moveRight && rocket.x < width && rocket.y != baseLine) {
+        rocket.x += 10;
+    }
+
     rocket.drawRocket();
-    
-    
+
+    image(rocketLayer, 0, 0);
 }
 
-function keyPressed()
-{
-	if (key == "W")
-	{
-		rocket.thrust = true;
-	}
-
-	if (key == "A")
-	{
-		rocket.moveLeft = true;
-	}
-
-	if (key == "D")
-	{
-		rocket.moveRight = true;
-	}
+function keyPressed() {
+    if (key == "W") {
+        rocket.thrust = true;
+    }
+    if (key == "A") {
+        rocket.moveLeft = true;
+    }
+    if (key == "D") {
+        rocket.moveRight = true;
+    }
 }
 
-function keyReleased()
-{
-    if(key == "W")
-    {
-	   rocket.thrust = false;
+function keyReleased() {
+    if (key == "W") {
+        rocket.thrust = false;
     }
-    
-    if(key == "A")
-    {
-	   rocket.moveLeft = false;
+    if (key == "A") {
+        rocket.moveLeft = false;
     }
-    
-    if(key == "D")
-    {
-	   rocket.moveRight = false;
+    if (key == "D") {
+        rocket.moveRight = false;
     }
-
 }
