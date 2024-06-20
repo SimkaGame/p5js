@@ -13,7 +13,6 @@ var floorPos_y;
 var isLeft;
 var isFalling;
 var isRight;
-var isPlummeting
 var speed;
 var jumpSpeed;
 var JUMPSPEED;
@@ -27,7 +26,6 @@ var groundHeight;
 var treeHeight;
 var diamond;
 var position;
-var canyon;
 var isInCayon;
 var treeCoor_x;
 var cloud;
@@ -41,6 +39,9 @@ var sky;
 var platforms;
 var isJumping;
 var isContact;
+var posE;
+var health;
+var heart;
 
 
 function setup()
@@ -48,7 +49,7 @@ function setup()
 	createCanvas(1024*1.5, 576);
 	floorPos_y = height * 3/4;
 	gameChar_x = width/4;
-	gameChar_y = floorPos_y;
+	gameChar_y = floorPos_y - 1;
     speed = 4;
     JUMPSPEED = 15;
     jumpSpeed = JUMPSPEED;
@@ -57,11 +58,9 @@ function setup()
     isJumping = false;
     isContact = false;
     
-    
-//    isInCayon = false;
-    
     viewTime = false;
     viewTimer = 0;
+    health = 5;
     
     counter = 0;
     
@@ -71,6 +70,8 @@ function setup()
     platforms.push(createPlatforms(500, floorPos_y - 180,120));
     platforms.push(createPlatforms(700, floorPos_y - 300,180));
     platforms.push(createPlatforms(900, floorPos_y - 120,200));
+    platforms.push(createPlatforms(0, floorPos_y,400));
+    platforms.push(createPlatforms(480, floorPos_y,1530));
     console.log(platforms);
     
     
@@ -95,45 +96,42 @@ function setup()
         diameter: 350,
         };
     
-
-    
+    //Enemies
+    posE = 110;
+    speedE = 2;
     
 }
 
 function draw()
 {
-
-	///////////DRAWING CODE//////////
     background(sky.r,sky.g,sky.b); //fill the sky blue
-    
-    console.log("isFalling " + isFalling);
-    console.log("isJumping " + isJumping);
-    console.log("isLeft " + isLeft);
-    
-    
-
-    //platforms
     
     
     //sun
+    noStroke();
     fill(255, 255, 0);
     ellipse(sun.x, sun.y, sun.diameter);
-    console.log("sun: " + sun.y);
     
     //green ground
 	noStroke();
 	fill(0,155,0);
 	rect(0, floorPos_y, width, height - floorPos_y);
     
+    
     drawCloud();
     drawMountain();
     drawTree();
     drawDiamond();
     checkCoins(position);
+    checkEnemy();
     moveSun();
+    drawEnemies();
+    drawHeart();
+    
     for (var i = 0; i < platforms.length; i ++){
         platforms[i].draw();
     }
+    
     drawCanyon();
     
     if (viewTime && textTimer < 50){
@@ -149,8 +147,9 @@ function draw()
       fill(0);   
       strokeWeight(4);
       textSize(20);
-      text("X: "+mouseX, mouseX - 50, mouseY - 25);
-      text("Y: "+mouseY, mouseX - 50, mouseY);
+      text("X: "+ round(mouseX), mouseX - 50, mouseY - 25);
+      text("Y: "+ round(mouseY), mouseX - 50, mouseY);
+      stroke('black');
       fill(51,255,221);
       textSize(35);
       text('Counter diamonds:  '+counter,20,50);
@@ -159,6 +158,9 @@ function moveLogic()
 {
     //the game character
     noStroke();
+    
+    isInCanyon();
+    
 	if(isLeft && (isFalling || isJumping))
 	{
         for (var i = 0; i < platforms.length; i++){
@@ -194,7 +196,7 @@ function moveLogic()
         
         for (var i = 0; i < platforms.length; i++){
             isContact = platforms[i].checkContact(gameChar_x, gameChar_y);
-            if (isContact) {
+             if (isContact) {
                 break;
             }
             }
@@ -277,13 +279,17 @@ function moveLogic()
         }
     }
 
-//function isInCanyon() {
-//        if (gameChar_x > 471 && gameChar_x < 500){
-//        gameChar_y = floorPos_y;
-//    } else {
-//        gameChar_y = floorPos_y;
-//    }
-//}
+function isInCanyon() {
+        if (gameChar_x > 420 && gameChar_x < 450 && gameChar_y >= floorPos_y){
+        isFalling = true;
+        isLeft = false;
+        isRight = false;
+            }
+        if(gameChar_y >= 630){
+            gameChar_x = random(50,1500);
+            gameChar_y = groundHeight;
+        }
+    }
 
 function drawCanyon(){
     
@@ -293,14 +299,15 @@ function drawCanyon(){
     };
     
     //canyon_left
+    noStroke();
     fill(65,18,18);
-    rect(401,432,20,50)
+    rect(401,432,20,500);
     //canyon_middle
     fill(0,0,0);
-    rect(421,432,45,50)
+    rect(421,432,45,500);
     //canyon_left
     fill(65,18,18);
-    rect(465,432,20,50)
+    rect(465,432,20,500);
 }
 
 function keyPressed()
@@ -315,11 +322,6 @@ function keyPressed()
     if (keyCode == 32){
         isJumping = true;
     }
-
-
-	//open up the console to see how these work
-	console.log("keyPressed: " + key);
-	console.log("keyPressed: " + keyCode);
 }
 
 
@@ -331,9 +333,6 @@ function keyReleased()
     if (keyCode == 65){
         isLeft = false;
     }
-
-	console.log("keyReleased: " + key);
-	console.log("keyReleased: " + keyCode);
 }
 
 
@@ -344,6 +343,14 @@ function checkCoins(position){
         viewTime = true;
         textTimer = 0;
         counter +=1;
+    }
+}
+
+function checkEnemy(){
+    if(dist(gameChar_x,gameChar_y-45,posE,300) < 20){
+        gameChar_x = random(50,1500);
+        gameChar_y = groundHeight - 1;
+        health -= 1;
     }
 }
 
@@ -361,6 +368,43 @@ function moveSun(){
         sky.b = 97;
     }
     //остальные значения(День)
+}
+
+function drawHeart(){
+    
+    heart = {
+        x:47,
+        y:107,
+        s:5
+    }
+    
+    //health(main)
+    noStroke();
+    fill('red');
+    rect(heart.x,heart.y - 5,heart.s,heart.s);
+    rect(heart.x,heart.y - 10,heart.s,heart.s);
+    rect(heart.x - 5,heart.y - 10,heart.s,heart.s);
+    rect(heart.x + 5,heart.y - 10,heart.s,heart.s);
+    rect(heart.x,heart.y - 5,heart.s,heart.s);
+    rect(heart.x -5,heart.y - 15,heart.s * 3,heart.s);
+    rect(heart.x - 10,heart.y - 15,heart.s * 5,heart.s);
+    rect(heart.x - 10,heart.y - 20,heart.s * 5,heart.s);
+    stroke('black')
+    text(health,95,108);
+    
+    //health(stroke)
+    noStroke();
+    fill('black');
+    rect(heart.x,heart.y,heart.s,heart.s);
+    rect(heart.x - 5,heart.y - 5,heart.s,heart.s);
+    rect(heart.x - 10,heart.y - 10,heart.s,heart.s);
+    rect(heart.x - 15,heart.y - 20,heart.s,heart.s * 2);
+    rect(heart.x - 10,heart.y - 25,heart.s * 2,heart.s);
+    rect(heart.x,heart.y - 20,heart.s,heart.s);
+    rect(heart.x + 5,heart.y - 25,heart.s * 2,heart.s);
+    rect(heart.x + 15,heart.y - 20,heart.s,heart.s*2);
+    rect(heart.x + 10,heart.y - 10,heart.s,heart.s);
+    rect(heart.x + 5,heart.y - 5,heart.s,heart.s);
 }
 
 
@@ -418,6 +462,7 @@ function createPlatforms(x, y, length) {
         y: y,
         length: length,
         draw: function() {
+            noStroke();
             fill(0,155,0);
             rect(this.x, this.y, this.length, 20);
         },
@@ -476,6 +521,32 @@ function drawMountain(){
     }   
 }
 
+function drawEnemies() {
+    posE = posE + speedE; // Move slightly to the right every frame by changing the value of x by 1
+	if (posE > 325 || posE < 105){
+      speedE *= -1;
+      }
+  if (posE == 0){
+      speedE *= -1 ;
+      }
+    //drawing
+    //body
+    fill(254,212,188);
+    rect(posE + 6,315, 13, 13);
+    //legs
+    fill('brown');
+    rect(posE,326,10,5);
+    rect(posE + 15,326,10,5);
+    //head
+    fill(245,57,12);
+    triangle(posE + 3,319,posE + 12,305,posE + 22,319);
+    //eyes
+    stroke('black');
+    strokeWeight(2);
+    point(posE + 10,313);
+    point(posE + 16,313);
+}
+
 function drawDiamond() {
     
     diamond = {
@@ -515,7 +586,6 @@ function makeJump2() {
         if (jumpSpeed == 0){
             jumpSpeed = JUMPSPEED;
             isJumping = false;
-            console.log("set isFalling true by makeJump2");
             isFalling = true;
         }
         
@@ -534,15 +604,6 @@ function makeFalling() {
         }
     }
 }
-
-//function stopLeft(){
-//    if (gameChar_x == 401){
-//            gameChar_x == 401;
-//        }
-//        else{
-//            gameChar_x -= speed
-//        }
-//}
 
 function drawJumpingLeft() {
   //Jumping to the left
