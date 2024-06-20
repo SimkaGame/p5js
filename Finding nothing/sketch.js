@@ -130,7 +130,7 @@ else if  (dist(mouseX, mouseY, point.X, point.Y) <= point.radius && stage == 2)
 
 }
 function keyTyped() {
-    if (key === 'r' && stage ==3){
+    if (key == 'r' && stage ==3){
         stage = 1;
     }
 }

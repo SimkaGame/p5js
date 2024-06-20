@@ -14,15 +14,11 @@ var vertex_small;
 var mountain_coor_x;
 var tree;
 var groundHeight;
-var treeHeight;
 var diamond;
 var position;
-var isInCayon;
 var treeCoor_x;
-var cloud;
 var clouds_coor_x;
 var clouds_coor_y;
-var coin;
 var viewTime;
 var textTimer;
 var counter;
@@ -39,38 +35,38 @@ function setup()
 {
 	createCanvas(1024*1.5, 576);
 	floorPos_y = height * 3/4;
-	gameChar_x = width/4;
-	gameChar_y = floorPos_y - 1;
+    gameChar_x = random(50,290);
+	gameChar_y = floorPos_y;
     speed = 4;
     JUMPSPEED = 15;
     jumpSpeed = JUMPSPEED;
     groundHeight = 412;
-    treeHeight = 100;
     isJumping = false;
     isContact = false;
-    
     viewTime = false;
     viewTimer = 0;
     health = 5;
-    
     counter = 0;
     
     platforms = [];
     
-    platforms.push(createPlatforms(100, floorPos_y - 100,250));
-    platforms.push(createPlatforms(500, floorPos_y - 180,120));
-    platforms.push(createPlatforms(700, floorPos_y - 300,180));
-    platforms.push(createPlatforms(900, floorPos_y - 120,200));
-    platforms.push(createPlatforms(0, floorPos_y,400));
-    platforms.push(createPlatforms(480, floorPos_y,1530));
+    platforms.push(createPlatforms(70, floorPos_y - 100,200));
+    platforms.push(createPlatforms(340, floorPos_y - 150,150));
+    platforms.push(createPlatforms(590, floorPos_y - 260,160));
+    platforms.push(createPlatforms(800, floorPos_y - 170,150));
+    platforms.push(createPlatforms(935, floorPos_y - 100,150));
+    
+    //floor
+    platforms.push(createPlatforms(0, floorPos_y,324));
+    platforms.push(createPlatforms(622, floorPos_y,1500));
     console.log(platforms);
     
     
     
     //diamond
     position = {
-		pos_x: random(30, 1000),
-		pos_y: 385,
+		pos_x: 430,
+		pos_y: 240,
 		scale: 1.3
     };
     
@@ -82,9 +78,9 @@ function setup()
     }
     
     sun = {
-        x:random(0,1500), //450,
-        y: random(-200,700),//200
-        diameter: 350,
+        x:random(0,1500),
+        y: random(-200,700),
+        diameter: 350
         };
     
     enemy = {
@@ -128,13 +124,11 @@ function draw()
     drawCanyon();
     
     if (viewTime && textTimer < 50){
-        fill('yellow');
+        fill('orange');
         textSize(50);
-        text('GOT IT',random(50, width), random(height/2, height));
+        text('Well done',random(50, width), random(height/2, height));
         textTimer +=1;
 }
-	///////////INTERACTION CODE//////////
-	//Put conditional statements to move the game character below here
     moveLogic();
     
       fill(0);   
@@ -197,7 +191,6 @@ function moveLogic()
                 isFalling = true;
             }
         gameChar_x -=speed;
-        
         drawGoLeft();
 
  }
@@ -229,9 +222,6 @@ function moveLogic()
         makeJump2();
         makeFalling();
 
-        
-        
-
 	}
 	else
 	{
@@ -240,6 +230,7 @@ function moveLogic()
 
 	}
 }
+
     //cloud
     function drawCloud(){
         clouds_coor_x = [90,400,800,1100,1300];
@@ -260,7 +251,7 @@ function moveLogic()
             
         noStroke(); 
         //fill the sky blue 
-        fill(133,189,239);
+        fill(133,189,239,250);
         ellipse(120,0,cloud.diameter);   
         ellipse(0,0,cloud.diameter);
         ellipse(30,0,cloud.diameter*1.5);    
@@ -273,13 +264,14 @@ function moveLogic()
     }
 
 function isInCanyon() {
-        if (gameChar_x > 420 && gameChar_x < 450 && gameChar_y >= floorPos_y){
+        if (gameChar_x > 326 && gameChar_x < 622 && gameChar_y >= floorPos_y){
         isFalling = true;
         isLeft = false;
         isRight = false;
+        isJumping = false;
             }
         if(gameChar_y >= 630){
-            gameChar_x = random(50,400 && 490,1500);
+            gameChar_x = random(50,290);
             gameChar_y = groundHeight;
             health -= 1;
         }
@@ -295,13 +287,13 @@ function drawCanyon(){
     //canyon_left
     noStroke();
     fill(65,18,18);
-    rect(401,432,20,500);
+    rect(304,432,20,500);
     //canyon_middle
     fill(0,0,0);
-    rect(421,432,45,500);
+    rect(324,432,300,500);
     //canyon_left
     fill(65,18,18);
-    rect(465,432,20,500);
+    rect(624,432,20,500);
 }
 
 function keyPressed()
@@ -317,6 +309,12 @@ function keyPressed()
         isJumping = true;
     }
 }
+function keyTyped() {
+    if (key == 'r'){
+        counter = 0;
+        health = 5;
+    }
+}
 
 
 function keyReleased()
@@ -330,18 +328,24 @@ function keyReleased()
 }
 
 function checkCoins(position){
-    if (dist(gameChar_x,gameChar_y-45,position.pos_x,position.pos_y) < 20){
-        position.pos_x = random(15,width - 15);
+    
+    
+    if (dist(gameChar_x,gameChar_y-45,position.pos_x,position.pos_y) < 35)
+    {
+        position.pos_x = random(650,width - 15);
         position.pos_y = random(floorPos_y -40,floorPos_y -110);
         viewTime = true;
         textTimer = 0;
         counter +=1;
+        if (counter % 5 ==0){
+            health +=1;
+        }
     }
 }
 
 function checkEnemy(){
     if(dist(gameChar_x,gameChar_y-45,enemy.x,300) < 45){
-        gameChar_x = random(50,400 && 490,1500);
+        gameChar_x = random(50,290);
         gameChar_y = groundHeight;
         health -= 1;
     }
@@ -405,7 +409,7 @@ function drawHeart(){
 
 function drawTree(){
     
-    treeCoor_x = [50,250,400,590,720,850,990,1100,1250,1300];
+    treeCoor_x = [50,250,720,850,990,1100,1250,1300];
     
     for (var i = 0; i < treeCoor_x.length; i++){
         
@@ -518,14 +522,19 @@ function drawMountain(){
 
 function drawEnemies() {
     enemy.x += enemy.s;
-	if (enemy.x > 325 || enemy.x < 105){
+	if (enemy.x > 250 || enemy.x < 70){
       enemy.s *= -1;
       }
   if (enemy.x == 0){
       enemy.s *= -1 ;
       }
-    noStroke();
-    fill('white');
+    //светящиеся глаза ночью
+    if (sun.y < -190 || sun.y > 590){
+    fill('purple');
+    rect(enemy.x + 5,enemy.y -50,enemy.sz,enemy.sz);
+    rect(enemy.x + 30,enemy.y -50,enemy.sz,enemy.sz);
+    }
+    fill(255,255,255,150);
     rect(enemy.x,enemy.y,enemy.sz * 4,enemy.sz);
     rect(enemy.x - 10,enemy.y - 5,enemy.sz * 8,enemy.sz);
     rect(enemy.x - 15,enemy.y - 10,enemy.sz * 10,enemy.sz);
