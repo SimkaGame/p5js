@@ -1,12 +1,3 @@
-/*
-
-The Game Project
-
-Game interaction
-
-*/
-
-
 var gameChar_x;
 var gameChar_y;
 var floorPos_y;
@@ -39,7 +30,7 @@ var sky;
 var platforms;
 var isJumping;
 var isContact;
-var posE;
+var enemy;
 var health;
 var heart;
 
@@ -96,10 +87,12 @@ function setup()
         diameter: 350,
         };
     
-    //Enemies
-    posE = 110;
-    speedE = 2;
-    
+    enemy = {
+    x:110,
+    y:319,    
+    s:3,
+    sz:5
+    };
 }
 
 function draw()
@@ -286,8 +279,9 @@ function isInCanyon() {
         isRight = false;
             }
         if(gameChar_y >= 630){
-            gameChar_x = random(50,1500);
+            gameChar_x = random(50,400 && 490,1500);
             gameChar_y = groundHeight;
+            health -= 1;
         }
     }
 
@@ -335,7 +329,6 @@ function keyReleased()
     }
 }
 
-
 function checkCoins(position){
     if (dist(gameChar_x,gameChar_y-45,position.pos_x,position.pos_y) < 20){
         position.pos_x = random(15,width - 15);
@@ -347,20 +340,22 @@ function checkCoins(position){
 }
 
 function checkEnemy(){
-    if(dist(gameChar_x,gameChar_y-45,posE,300) < 20){
-        gameChar_x = random(50,1500);
-        gameChar_y = groundHeight - 1;
+    if(dist(gameChar_x,gameChar_y-45,enemy.x,300) < 45){
+        gameChar_x = random(50,400 && 490,1500);
+        gameChar_y = groundHeight;
         health -= 1;
     }
 }
 
 function moveSun(){
+    
     //закат
     if  (280 < sun.y && sun.y < 590){
         sky.r = 221;
         sky.g = 130;
         sky.b = 110;
     }
+    
     //ночь
     else if (sun.y < -190 || sun.y > 590){
         sky.r = 44;
@@ -386,7 +381,7 @@ function drawHeart(){
     rect(heart.x - 5,heart.y - 10,heart.s,heart.s);
     rect(heart.x + 5,heart.y - 10,heart.s,heart.s);
     rect(heart.x,heart.y - 5,heart.s,heart.s);
-    rect(heart.x -5,heart.y - 15,heart.s * 3,heart.s);
+    rect(heart.x -5,heart.y - 15,heart.s,heart.s);
     rect(heart.x - 10,heart.y - 15,heart.s * 5,heart.s);
     rect(heart.x - 10,heart.y - 20,heart.s * 5,heart.s);
     stroke('black')
@@ -522,29 +517,34 @@ function drawMountain(){
 }
 
 function drawEnemies() {
-    posE = posE + speedE; // Move slightly to the right every frame by changing the value of x by 1
-	if (posE > 325 || posE < 105){
-      speedE *= -1;
+    enemy.x += enemy.s;
+	if (enemy.x > 325 || enemy.x < 105){
+      enemy.s *= -1;
       }
-  if (posE == 0){
-      speedE *= -1 ;
+  if (enemy.x == 0){
+      enemy.s *= -1 ;
       }
-    //drawing
-    //body
-    fill(254,212,188);
-    rect(posE + 6,315, 13, 13);
-    //legs
-    fill('brown');
-    rect(posE,326,10,5);
-    rect(posE + 15,326,10,5);
-    //head
-    fill(245,57,12);
-    triangle(posE + 3,319,posE + 12,305,posE + 22,319);
-    //eyes
-    stroke('black');
-    strokeWeight(2);
-    point(posE + 10,313);
-    point(posE + 16,313);
+    noStroke();
+    fill('white');
+    rect(enemy.x,enemy.y,enemy.sz * 4,enemy.sz);
+    rect(enemy.x - 10,enemy.y - 5,enemy.sz * 8,enemy.sz);
+    rect(enemy.x - 15,enemy.y - 10,enemy.sz * 10,enemy.sz);
+    rect(enemy.x - 15,enemy.y - 15,enemy.sz * 10,enemy.sz);
+    rect(enemy.x - 20,enemy.y - 20,enemy.sz * 11,enemy.sz);
+    rect(enemy.x - 20,enemy.y - 25,enemy.sz * 12,enemy.sz);
+    rect(enemy.x - 10,enemy.y - 30,enemy.sz * 10,enemy.sz);
+    rect(enemy.x - 10,enemy.y - 35,enemy.sz * 10,enemy.sz);
+    rect(enemy.x - 10,enemy.y - 40,enemy.sz * 5,enemy.sz);
+    rect(enemy.x + 25,enemy.y - 40,enemy.sz * 3,enemy.sz);
+    rect(enemy.x - 5,enemy.y - 45,enemy.sz * 4,enemy.sz);
+    rect(enemy.x + 25,enemy.y - 45,enemy.sz * 3,enemy.sz);
+    rect(enemy.x - 5,enemy.y - 50,enemy.sz * 2,enemy.sz);
+    rect(enemy.x + 10,enemy.y - 50,enemy.sz * 4,enemy.sz);
+    rect(enemy.x + 35,enemy.y - 50,enemy.sz,enemy.sz);
+    rect(enemy.x - 5,enemy.y - 55,enemy.sz * 9,enemy.sz);
+    rect(enemy.x,enemy.y - 60,enemy.sz * 7,enemy.sz);
+    rect(enemy.x + 5,enemy.y - 65,enemy.sz * 5,enemy.sz);
+    rect(enemy.x - 25,enemy.y - 30,enemy.sz,enemy.sz);
 }
 
 function drawDiamond() {
