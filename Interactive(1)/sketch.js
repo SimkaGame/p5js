@@ -27,8 +27,13 @@ var platforms;
 var isJumping;
 var isContact;
 var enemy;
-var health;
+var health = 5;
 var heart;
+var stage = 2;
+var clicks = 0;
+var heart_coor_x;
+var diamonde;
+var position;
 
 
 function setup()
@@ -45,7 +50,6 @@ function setup()
     isContact = false;
     viewTime = false;
     viewTimer = 0;
-    health = 5;
     counter = 0;
     
     platforms = [];
@@ -89,10 +93,76 @@ function setup()
     s:3,
     sz:5
     };
+    
+    
 }
 
 function draw()
 {
+    
+    if(stage == 2){
+        background('black');
+        textSize(40);
+        fill('red');
+        text("Лкм", 700, 450);
+        fill(255,127,80);
+        text("Нажми        для старта", 565, 450);
+        textSize(25);
+        fill('red');
+        text("Цель игры:",100, 100);
+        fill(255,127,80);
+        text("Собрать как можно больше кристаллов",100,130);
+        fill('red');
+        text("Правила:",100, 200);
+        fill(255,127,80);
+        text("Прикосновение к врагу и падение в яму",100, 230);
+        text("отнимают жизни, если счетик будет = 0",100,260);
+        text("игра будет окончена",100, 290);
+    }
+    
+    if(stage == 3){
+        background('black');
+        //Hero (670 300)
+        fill(218,169,193)
+        ellipse(670,300 - 50,30,30);
+        //body
+        fill(155,79,79)
+        rect(670 - 10,300 - 35,20,22);
+        //arm_left
+        fill(151,38,38)
+        rect(670 - 20,300 - 35,10,15);
+        //arm_right
+        fill(151,38,38);
+        rect(670 + 10,300 - 35,10,15);
+        //leg_right
+        fill(151,38,38);
+        rect(670 + 2,300 - 13,8,15);
+        //leg_left
+        fill(151,38,38);
+        rect(670 - 10,300 - 13,8,15);
+        
+        //Health
+        fill('white');
+        textSize(40);
+        text('X',750,283);
+        textSize(70);
+        fill('red');
+        text(health,820,295);
+        textSize(40);
+        fill('red');
+        text("Лкм", 700, 450);
+        fill(255,127,80);
+        text("Нажми ещё раз        для старта", 403, 450);
+        
+        
+}
+
+    
+    
+    if(stage == 4){
+    //main picture
+        
+        
     background(sky.r,sky.g,sky.b); //fill the sky blue
     
     
@@ -139,7 +209,47 @@ function draw()
       stroke('black');
       fill(51,255,221);
       textSize(35);
-      text('Counter diamonds:  '+counter,20,50);
+      text('X  ' + counter,75,50);
+        
+        
+      //diamond
+      positione = {
+		pos_x: 30,
+		pos_y: 21,
+		scale: 1  
+      }
+        
+      diamonde = {
+		up_y: positione.pos_y,
+		up_1x: positione.pos_x,
+		up_2x: positione.pos_x + 10 * positione.scale,
+		up_3x: positione.pos_x + 20 * positione.scale,
+		midl_y: positione.pos_y + 10 * positione.scale,
+		midl_1x: positione.pos_x - 5 * positione.scale,
+		midl_2x: positione.pos_x + 5 * positione.scale,
+		midl_3x: positione.pos_x + 15 * positione.scale,
+		midl_4x: positione.pos_x + 25 * positione.scale,
+		down_x: positione.pos_x + 10 * positione.scale,
+		down_y: positione.pos_y + 30 * positione.scale
+	};
+    
+    noStroke();
+	fill(30, 144, 255);
+	triangle(diamonde.up_1x, diamonde.up_y, diamonde.midl_2x, diamonde.midl_y, diamonde.up_2x, diamonde.up_y);
+	triangle(diamonde.up_2x, diamonde.up_y, diamonde.midl_3x, diamonde.midl_y, diamonde.up_3x, diamonde.up_y);
+	fill(135, 206, 250);
+	triangle(diamonde.midl_1x, diamonde.midl_y, diamonde.up_1x, diamonde.up_y, diamonde.midl_2x, diamonde.midl_y);
+	triangle(diamonde.midl_2x, diamonde.midl_y, diamonde.up_2x, diamonde.up_y, diamonde.midl_3x, diamonde.midl_y);
+	triangle(diamonde.midl_3x, diamonde.midl_y, diamonde.up_3x, diamonde.up_y, diamonde.midl_4x, diamonde.midl_y);
+	fill(72, 61, 139);
+	triangle(diamonde.midl_1x, diamonde.midl_y, diamonde.down_x, diamonde.down_y, diamonde.midl_2x, diamonde.midl_y);
+	triangle(diamonde.midl_3x, diamonde.midl_y, diamonde.down_x, diamonde.down_y, diamonde.midl_4x, diamonde.midl_y);
+	fill(123, 104, 238);
+	triangle(diamonde.midl_2x, diamonde.midl_y, diamonde.down_x, diamonde.down_y, diamonde.midl_3x, diamonde.midl_y);
+ 
+        
+        
+    }
 }
 function moveLogic()
 {
@@ -308,14 +418,16 @@ function keyPressed()
     if (keyCode == 32){
         isJumping = true;
     }
-}
-function keyTyped() {
-    if (key == 'r'){
+    if (keyCode == 82){
         counter = 0;
         health = 5;
+        gameChar_x = random(50,290);
+        sun.x = random(0,1500);
+        sun.y = random(-200,700);
+        
     }
+    
 }
-
 
 function keyReleased()
 {
@@ -324,6 +436,21 @@ function keyReleased()
     }
     if (keyCode == 65){
         isLeft = false;
+    }
+}
+
+function mousePressed(){
+    clicks ++;
+    if (stage == 1){
+        stage = 2;
+        clicks = 0;
+    }
+    
+    else if (clicks == 1){
+        stage = 3;
+    }
+    else if(clicks == 2){
+        stage = 4;
     }
 }
 
@@ -366,14 +493,24 @@ function moveSun(){
         sky.g = 56;
         sky.b = 97;
     }
+    
+    else if (-190 < sun.y || sun.y < 280){
+        sky.r = 100;
+        sky.g = 155;
+        sky.b = 255;
+    }
     //остальные значения(День)
 }
 
 function drawHeart(){
     
+    heart_coor_x = [40,85,130,175,220,265,308,353,398,443];
+    
+    for (var i = 0; i < health; i ++){
+    
     heart = {
-        x:47,
-        y:107,
+        x:heart_coor_x[i],
+        y:98,
         s:5
     }
     
@@ -388,8 +525,6 @@ function drawHeart(){
     rect(heart.x -5,heart.y - 15,heart.s,heart.s);
     rect(heart.x - 10,heart.y - 15,heart.s * 5,heart.s);
     rect(heart.x - 10,heart.y - 20,heart.s * 5,heart.s);
-    stroke('black')
-    text(health,95,108);
     
     //health(stroke)
     noStroke();
@@ -404,6 +539,7 @@ function drawHeart(){
     rect(heart.x + 15,heart.y - 20,heart.s,heart.s*2);
     rect(heart.x + 10,heart.y - 10,heart.s,heart.s);
     rect(heart.x + 5,heart.y - 5,heart.s,heart.s);
+    }
 }
 
 
