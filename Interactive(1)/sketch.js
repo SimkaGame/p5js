@@ -26,14 +26,21 @@ var sky;
 var platforms;
 var isJumping;
 var isContact;
-var enemy;
 var health = 5;
 var heart;
 var stage = 2;
 var clicks = 0;
 var heart_coor_x;
 var diamonde;
-var position;
+var positione;
+var enemy_coor_x = [110, 730,690];
+var enemy_coor_y = [319, 162,420];
+var enemy_limit_l = [70, 600,650];
+var enemy_limit_r = [250, 736,1400];
+var enemy_speed = [1, 2, 5];
+var enemies = [];
+var enemy;
+
 
 
 function setup()
@@ -52,6 +59,7 @@ function setup()
     viewTimer = 0;
     counter = 0;
     
+    
     platforms = [];
     
     platforms.push(createPlatforms(70, floorPos_y - 100,200));
@@ -63,7 +71,6 @@ function setup()
     //floor
     platforms.push(createPlatforms(0, floorPos_y,324));
     platforms.push(createPlatforms(622, floorPos_y,1500));
-    console.log(platforms);
     
     
     
@@ -87,26 +94,31 @@ function setup()
         diameter: 350
         };
     
-    enemy = {
-    x:110,
-    y:319,    
-    s:3,
-    sz:5
-    };
     
+    for (var i = 0; i < enemy_coor_x.length; i++) {
+        enemies.push({
+            x: enemy_coor_x[i],
+            y: enemy_coor_y[i],
+            sz: 5,
+            l: enemy_limit_l[i],
+            r: enemy_limit_r[i],
+            speed: enemy_speed[i]
+            });
+    }
     
 }
 
 function draw()
 {
     
+    
     if(stage == 2){
         background('black');
         textSize(40);
         fill('red');
-        text("Лкм", 700, 450);
+        text("Лкм", 740, 450);
         fill(255,127,80);
-        text("Нажми        для старта", 565, 450);
+        text("Нажмите        для старта", 565, 450);
         textSize(25);
         fill('red');
         text("Цель игры:",100, 100);
@@ -147,12 +159,12 @@ function draw()
         text('X',750,283);
         textSize(70);
         fill('red');
-        text(health,820,295);
+        text(health,820,290);
         textSize(40);
         fill('red');
-        text("Лкм", 700, 450);
+        text("Лкм", 790, 450);
         fill(255,127,80);
-        text("Нажми ещё раз        для старта", 403, 450);
+        text("Нажмите ещё раз        для старта", 450, 450);
         
         
 }
@@ -160,12 +172,11 @@ function draw()
     
     
     if(stage == 4){
+        
     //main picture
         
+    background(sky.r,sky.g,sky.b); //fill the sky
         
-    background(sky.r,sky.g,sky.b); //fill the sky blue
-    
-    
     //sun
     noStroke();
     fill(255, 255, 0);
@@ -199,17 +210,17 @@ function draw()
         text('Well done',random(50, width), random(height/2, height));
         textTimer +=1;
 }
-    moveLogic();
+        moveLogic();
     
-      fill(0);   
-      strokeWeight(4);
-      textSize(20);
-      text("X: "+ round(mouseX), mouseX - 50, mouseY - 25);
-      text("Y: "+ round(mouseY), mouseX - 50, mouseY);
-      stroke('black');
-      fill(51,255,221);
-      textSize(35);
-      text('X  ' + counter,75,50);
+        fill(0);   
+        strokeWeight(4);
+        textSize(20);
+        text("X: "+ round(mouseX), mouseX - 50, mouseY - 25);
+        text("Y: "+ round(mouseY), mouseX - 50, mouseY);
+        stroke('black');
+        fill(51,255,221);
+        textSize(35);
+        text('X  ' + counter,75,50);
         
         
       //diamond
@@ -247,8 +258,23 @@ function draw()
 	fill(123, 104, 238);
 	triangle(diamonde.midl_2x, diamonde.midl_y, diamonde.down_x, diamonde.down_y, diamonde.midl_3x, diamonde.midl_y);
  
+    }
+    
+    if (stage == 5){
+        background('black');
+        fill('red');
+        textSize(70);
+        text('Вы проиграли',570,270);
+        textSize(40);
+        fill('red');
+        text("R", 690, 450);
+        fill(255,127,80);
+        text("Нажмите      для перезапуска игры", 503, 450);
         
-        
+    }
+    
+    if (health == 0){
+        stage = 5;
     }
 }
 function moveLogic()
@@ -295,8 +321,8 @@ function moveLogic()
             isContact = platforms[i].checkContact(gameChar_x, gameChar_y);
              if (isContact) {
                 break;
-            }
-            }
+             }
+        }
             if (!isContact && gameChar_y != floorPos_y) {
                 isFalling = true;
             }
@@ -382,8 +408,10 @@ function isInCanyon() {
             }
         if(gameChar_y >= 630){
             gameChar_x = random(50,290);
-            gameChar_y = groundHeight;
+            gameChar_y = floorPos_y;
             health -= 1;
+            stage = 3;
+            clicks = 1;
         }
     }
 
@@ -418,16 +446,22 @@ function keyPressed()
     if (keyCode == 32){
         isJumping = true;
     }
-    if (keyCode == 82){
-        counter = 0;
+//    if (keyCode == 82){
+//        counter = 0;
+//        health = 5;
+//        gameChar_x = random(50,290);
+//        sun.x = random(0,1500);
+//        sun.y = random(-200,700);   
+//    }
+    
+    if (stage == 5 && keyCode == 82){
         health = 5;
-        gameChar_x = random(50,290);
-        sun.x = random(0,1500);
-        sun.y = random(-200,700);
-        
+        stage = 3;
+        clicks = 1;
     }
     
 }
+console.log()
 
 function keyReleased()
 {
@@ -452,6 +486,9 @@ function mousePressed(){
     else if(clicks == 2){
         stage = 4;
     }
+    if (health == 0){
+        stage = 5;
+    }
 }
 
 function checkCoins(position){
@@ -467,14 +504,6 @@ function checkCoins(position){
         if (counter % 5 ==0){
             health +=1;
         }
-    }
-}
-
-function checkEnemy(){
-    if(dist(gameChar_x,gameChar_y-45,enemy.x,300) < 45){
-        gameChar_x = random(50,290);
-        gameChar_y = groundHeight;
-        health -= 1;
     }
 }
 
@@ -656,14 +685,17 @@ function drawMountain(){
     }   
 }
 
+
 function drawEnemies() {
-    enemy.x += enemy.s;
-	if (enemy.x > 250 || enemy.x < 70){
-      enemy.s *= -1;
-      }
-  if (enemy.x == 0){
-      enemy.s *= -1 ;
-      }
+    
+for (var i = 0; i < enemies.length; i++) {
+        enemy = enemies[i];
+
+        enemy.x += enemy.speed;
+        if (enemy.x > enemy.r || enemy.x < enemy.l) {
+            enemy.speed *= -1;
+        }
+    
     //светящиеся глаза ночью
     if (sun.y < -190 || sun.y > 590){
     fill('purple');
@@ -690,6 +722,21 @@ function drawEnemies() {
     rect(enemy.x,enemy.y - 60,enemy.sz * 7,enemy.sz);
     rect(enemy.x + 5,enemy.y - 65,enemy.sz * 5,enemy.sz);
     rect(enemy.x - 25,enemy.y - 30,enemy.sz,enemy.sz);
+    }
+}
+
+function checkEnemy() {
+    for (var i = 0; i < enemies.length; i++) {
+        enemy = enemies[i];
+        
+        if (dist(gameChar_x, gameChar_y - 45, enemy.x, enemy.y) < 45) {
+            gameChar_x = random(50, 290);
+            gameChar_y = floorPos_y;
+            health -= 1;
+            stage = 3;
+            clicks = 1;
+        }
+    }
 }
 
 function drawDiamond() {
