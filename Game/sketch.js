@@ -33,13 +33,14 @@ var clicks = 0;
 var heart_coor_x;
 var diamonde;
 var positione;
-var enemy_coor_x = [110, 730,690];
+var enemy_coor_x = [150, 730,690];
 var enemy_coor_y = [319, 162,420];
-var enemy_limit_l = [70, 600,650];
-var enemy_limit_r = [250, 736,1400];
+var enemy_limit_l = [150, 600,650];
+var enemy_limit_r = [290, 736,1400];
 var enemy_speed = [1, 2, 5];
 var enemies = [];
 var enemy;
+var cart;
 
 
 
@@ -47,7 +48,7 @@ function setup()
 {
 	createCanvas(1024*1.5, 576);
 	floorPos_y = height * 3/4;
-    gameChar_x = random(50,290);
+    gameChar_x = 75;
 	gameChar_y = floorPos_y;
     speed = 4;
     JUMPSPEED = 15;
@@ -59,17 +60,20 @@ function setup()
     viewTimer = 0;
     counter = 0;
     
+    cart = loadImage('mario.jpg');
+    
+    
     
     platforms = [];
     
-    platforms.push(createPlatforms(70, floorPos_y - 100,200));
+    platforms.push(createPlatforms(150, floorPos_y - 100,150));
     platforms.push(createPlatforms(340, floorPos_y - 150,150));
     platforms.push(createPlatforms(590, floorPos_y - 260,160));
     platforms.push(createPlatforms(800, floorPos_y - 170,150));
-    platforms.push(createPlatforms(935, floorPos_y - 100,150));
+    platforms.push(createPlatforms(970, floorPos_y - 100,150));
     
     //floor
-    platforms.push(createPlatforms(0, floorPos_y,324));
+    platforms.push(createPlatforms(0, floorPos_y -1,302));
     platforms.push(createPlatforms(622, floorPos_y,1500));
     
     
@@ -261,7 +265,8 @@ function draw()
     }
     
     if (stage == 5){
-        background('black');
+//        background('black');
+        image(cart,0,0,width, height);
         fill('red');
         textSize(70);
         text('Вы проиграли',570,270);
@@ -407,7 +412,7 @@ function isInCanyon() {
         isJumping = false;
             }
         if(gameChar_y >= 630){
-            gameChar_x = random(50,290);
+            gameChar_x = 75;
             gameChar_y = floorPos_y;
             health -= 1;
             stage = 3;
@@ -436,24 +441,33 @@ function drawCanyon(){
 
 function keyPressed()
 {
+    
+    //D
     if (keyCode == 68){
         isRight = true;
     }
+    
+    //A
     if (keyCode == 65){
         isLeft = true;
     }
     
+    //space
     if (keyCode == 32){
         isJumping = true;
     }
-//    if (keyCode == 82){
-//        counter = 0;
-//        health = 5;
-//        gameChar_x = random(50,290);
-//        sun.x = random(0,1500);
-//        sun.y = random(-200,700);   
-//    }
     
+    //R
+    if (stage == 4 && keyCode == 82){
+        counter = 0;
+        health = 5;
+        gameChar_x = 75;
+        sun.x = random(0,1500);
+        sun.y = random(-200,700);
+        stage = 4;
+    }
+    
+    //R
     if (stage == 5 && keyCode == 82){
         health = 5;
         stage = 3;
@@ -730,7 +744,7 @@ function checkEnemy() {
         enemy = enemies[i];
         
         if (dist(gameChar_x, gameChar_y - 45, enemy.x, enemy.y) < 45) {
-            gameChar_x = random(50, 290);
+            gameChar_x = 75;
             gameChar_y = floorPos_y;
             health -= 1;
             stage = 3;
