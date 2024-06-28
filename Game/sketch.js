@@ -2,7 +2,6 @@ var gameChar_x;
 var gameChar_y;
 var floorPos_y;
 var isLeft;
-var isFalling;
 var isRight;
 var speed;
 var jumpSpeed;
@@ -26,6 +25,7 @@ var sky;
 var platforms;
 var isJumping;
 var isContact;
+var isFalling;
 var health = 5;
 var heart;
 var stage = 2;
@@ -41,7 +41,7 @@ var enemy_speed = [1, 2, 5];
 var enemies = [];
 var enemy;
 var cart;
-
+var isHelp;
 
 
 function setup()
@@ -59,6 +59,7 @@ function setup()
     viewTime = false;
     viewTimer = 0;
     counter = 0;
+    isHelp = false;
     
     cart = loadImage('mario.jpg');
     
@@ -72,9 +73,6 @@ function setup()
     platforms.push(createPlatforms(800, floorPos_y - 170,150));
     platforms.push(createPlatforms(970, floorPos_y - 100,150));
     
-    //floor
-    platforms.push(createPlatforms(0, floorPos_y -1,302));
-    platforms.push(createPlatforms(622, floorPos_y,1500));
     
     
     
@@ -216,7 +214,7 @@ function draw()
 }
         moveLogic();
     
-        fill(0);   
+        fill(0);
         strokeWeight(4);
         textSize(20);
         text("X: "+ round(mouseX), mouseX - 50, mouseY - 25);
@@ -261,7 +259,23 @@ function draw()
 	triangle(diamonde.midl_3x, diamonde.midl_y, diamonde.down_x, diamonde.down_y, diamonde.midl_4x, diamonde.midl_y);
 	fill(123, 104, 238);
 	triangle(diamonde.midl_2x, diamonde.midl_y, diamonde.down_x, diamonde.down_y, diamonde.midl_3x, diamonde.midl_y);
- 
+        
+        if (isHelp == true){
+            drawHelp();
+        }
+        
+        else if (isHelp == false){
+            fill(255,204,204);
+            text('(',1277,38);
+            fill('red');
+            textSize(35);
+            text('H',1287,40);
+            fill(255,204,204);
+            text(')',1312,38);
+            text('Показать',1340,40);
+            text('управление',1315,75);
+        }
+        
     }
     
     if (stage == 5){
@@ -282,6 +296,43 @@ function draw()
         stage = 5;
     }
 }
+
+function drawHelp(){
+            fill(255,204,204);
+            text('(',1277,38);
+            fill('red');
+            textSize(35);
+            text('H',1287,40);
+            fill(255,204,204);
+            text(')',1312,38);
+            fill(255,204,204);
+            text('Спрятать',1340,40);
+            fill(255,204,204);
+            text('(',1277,78);
+            fill('red');
+            text('A',1289,80);
+            fill(255,204,204);
+            text(')  - Ходьба',1312,78);
+            text('влево',1372,110);
+            text('(',1277,150);
+            fill('red');
+            text('D',1289,152);
+            fill(255,204,204);
+            text(')  - Ходьба',1312,150);
+            text('вправо',1369,180);
+            text('(',1205,223);
+            fill('red');
+            text('Space',1215,223);
+            fill(255,204,204);
+            text(')  - Прыжок',1312,223);
+            text('(',1277,273);
+            fill('red');
+            text('R',1289,273);
+            fill(255,204,204);
+            text(')  - Рестарт',1312,273);
+            text('игры',1392,305);
+}
+
 function moveLogic()
 {
     //the game character
@@ -304,6 +355,7 @@ function moveLogic()
         
 
 	}
+    
 	else if(isRight && (isFalling || isJumping))
 	{
         for (var i = 0; i < platforms.length; i++){
@@ -378,7 +430,7 @@ function moveLogic()
         clouds_coor_y = [170,150,200,155,165];
         
         for (var i = 0; i < clouds_coor_x.length; i++ ) {
-            
+        
         push();
         
         cloud = {
@@ -386,10 +438,10 @@ function moveLogic()
             y:clouds_coor_y[i],
             diameter:40
     };
-            
+    
         translate(cloud.x, cloud.y);
         scale(1);
-            
+        
         noStroke(); 
         //fill the sky blue 
         fill(133,189,239,250);
@@ -414,6 +466,7 @@ function isInCanyon() {
         if(gameChar_y >= 630){
             gameChar_x = 75;
             gameChar_y = floorPos_y;
+            isFalling = false;
             health -= 1;
             stage = 3;
             clicks = 1;
@@ -473,17 +526,26 @@ function keyPressed()
         stage = 3;
         clicks = 1;
     }
+    //help H
+    if (stage == 4 && keyCode == 72){
+        isHelp = true;
+    }
+    
     
 }
-console.log()
 
 function keyReleased()
 {
     if (keyCode == 68){
         isRight = false;
     }
+    
     if (keyCode == 65){
         isLeft = false;
+    }
+    
+    if (stage == 4 && keyCode == 72){
+        isHelp = false;
     }
 }
 
@@ -696,7 +758,7 @@ function drawMountain(){
         fill(255, 228, 225);
         triangle(vertex_small.x+500, vertex_small.y1, vertex_small.x+576, vertex_small.y2, vertex_small.x+425, vertex_small.y3);
         
-    }   
+    }
 }
 
 
@@ -746,9 +808,12 @@ function checkEnemy() {
         if (dist(gameChar_x, gameChar_y - 45, enemy.x, enemy.y) < 45) {
             gameChar_x = 75;
             gameChar_y = floorPos_y;
+            isFalling = false;
+            isJumping = false;
             health -= 1;
             stage = 3;
             clicks = 1;
+            
         }
     }
 }
