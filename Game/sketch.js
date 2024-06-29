@@ -42,6 +42,18 @@ var enemies = [];
 var enemy;
 var cart;
 var isHelp;
+var diamonds = [
+    {pos_x : 228, pos_y: 390},
+    {pos_x : 226, pos_y: 293},
+    {pos_x : 415, pos_y: 250},
+    {pos_x : 672, pos_y: 125},
+    {pos_x : 880, pos_y: 223},
+    {pos_x : 826, pos_y: 390},
+    {pos_x : 1030, pos_y: 293},
+    {pos_x : 1056, pos_y: 390},
+    {pos_x : 1426, pos_y: 390}
+];
+var chosenDiamondIndex;
 
 
 function setup()
@@ -61,6 +73,8 @@ function setup()
     counter = 0;
     isHelp = false;
     
+    chosenDiamondIndex = Math.floor(Math.random() * diamonds.length);
+    
     cart = loadImage('mario.jpg');
     
     
@@ -77,11 +91,11 @@ function setup()
     
     
     //diamond
-    position = {
-		pos_x: 430,
-		pos_y: 240,
-		scale: 1.3
-    };
+//    position = {
+//		pos_x: diamonds[i][0],
+//		pos_y: diamonds[i][1],
+//		scale: 1.3
+//    };
     
     
     sky = {
@@ -277,7 +291,6 @@ function draw()
         }
         
     }
-    
     if (stage == 5){
 //        background('black');
         image(cart,0,0,width, height);
@@ -511,6 +524,8 @@ function keyPressed()
     }
     
     //R
+    var position = diamonds[chosenDiamondIndex];
+    
     if (stage == 4 && keyCode == 82){
         counter = 0;
         health = 5;
@@ -518,6 +533,7 @@ function keyPressed()
         sun.x = random(0,1500);
         sun.y = random(-200,700);
         stage = 4;
+        chosenDiamondIndex = Math.floor(Math.random() * diamonds.length);
     }
     
     //R
@@ -562,18 +578,20 @@ function mousePressed(){
     else if(clicks == 2){
         stage = 4;
     }
+    var position = diamonds[chosenDiamondIndex];
+    
     if (health == 0){
         stage = 5;
+        chosenDiamondIndex = Math.floor(Math.random() * diamonds.length);
     }
 }
 
 function checkCoins(position){
-    
+    var position = diamonds[chosenDiamondIndex];
     
     if (dist(gameChar_x,gameChar_y-45,position.pos_x,position.pos_y) < 35)
     {
-        position.pos_x = random(650,width - 15);
-        position.pos_y = random(floorPos_y -40,floorPos_y -110);
+        chosenDiamondIndex = Math.floor(Math.random() * diamonds.length);
         viewTime = true;
         textTimer = 0;
         counter +=1;
@@ -819,19 +837,21 @@ function checkEnemy() {
 }
 
 function drawDiamond() {
+    var position = diamonds[chosenDiamondIndex];
+    
     
     diamond = {
 		up_y: position.pos_y,
 		up_1x: position.pos_x,
-		up_2x: position.pos_x + 10 * position.scale,
-		up_3x: position.pos_x + 20 * position.scale,
-		midl_y: position.pos_y + 10 * position.scale,
-		midl_1x: position.pos_x - 5 * position.scale,
-		midl_2x: position.pos_x + 5 * position.scale,
-		midl_3x: position.pos_x + 15 * position.scale,
-		midl_4x: position.pos_x + 25 * position.scale,
-		down_x: position.pos_x + 10 * position.scale,
-		down_y: position.pos_y + 30 * position.scale
+		up_2x: position.pos_x + 10 * 1.3,
+		up_3x: position.pos_x + 20 * 1.3,
+		midl_y: position.pos_y + 10 * 1.3,
+		midl_1x: position.pos_x - 5 * 1.3,
+		midl_2x: position.pos_x + 5 * 1.3,
+		midl_3x: position.pos_x + 15 * 1.3,
+		midl_4x: position.pos_x + 25 * 1.3,
+		down_x: position.pos_x + 10 * 1.3,
+		down_y: position.pos_y + 30 * 1.3
 	};
     
 	fill(30, 144, 255);
