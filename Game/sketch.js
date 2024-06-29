@@ -819,7 +819,8 @@ for (var i = 0; i < enemies.length; i++) {
     }
 }
 
-function checkEnemy() {
+function checkEnemy()
+{
     for (var i = 0; i < enemies.length; i++) {
         enemy = enemies[i];
         
@@ -831,6 +832,7 @@ function checkEnemy() {
             health -= 1;
             stage = 3;
             clicks = 1;
+            chosenDiamondIndex = Math.floor(Math.random() * diamonds.length);
             
         }
     }
