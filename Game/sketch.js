@@ -33,6 +33,9 @@ var clicks = 0;
 var heart_coor_x;
 var diamonde;
 var positione;
+var words;
+var position_1;
+var diamond_1;
 var enemy_coor_x = [150, 730,690];
 var enemy_coor_y = [319, 162,420];
 var enemy_limit_l = [150, 600,650];
@@ -45,7 +48,7 @@ var isHelp;
 var diamonds = [
     {pos_x : 228, pos_y: 390},
     {pos_x : 226, pos_y: 293},
-    {pos_x : 415, pos_y: 250},
+    {pos_x : 415, pos_y: 245},
     {pos_x : 672, pos_y: 125},
     {pos_x : 880, pos_y: 223},
     {pos_x : 826, pos_y: 390},
@@ -109,6 +112,11 @@ function setup()
         y: random(-200,700),
         diameter: 350
         };
+    
+    words = {
+        s:5,
+        y:height/2
+    };
     
     
     for (var i = 0; i < enemy_coor_x.length; i++) {
@@ -220,12 +228,55 @@ function draw()
     
     drawCanyon();
     
-    if (viewTime && textTimer < 50){
+        
+    if (viewTime && textTimer < 70){
         fill('orange');
-        textSize(50);
-        text('Well done',random(50, width), random(height/2, height));
+        textSize(100);
+        text('+1',480,words.y);
         textTimer +=1;
-}
+        words.y -= words.s;
+        
+    //diamond
+      position_1 = {
+		pos_x: 610,
+		pos_y: words.y - 55,
+		scale: 2 
+      }
+        
+      diamond_1 = {
+		up_y: position_1.pos_y,
+		up_1x: position_1.pos_x,
+		up_2x: position_1.pos_x + 10 * position_1.scale,
+		up_3x: position_1.pos_x + 20 * position_1.scale,
+		midl_y: position_1.pos_y + 10 * position_1.scale,
+		midl_1x: position_1.pos_x - 5 * position_1.scale,
+		midl_2x: position_1.pos_x + 5 * position_1.scale,
+		midl_3x: position_1.pos_x + 15 * position_1.scale,
+		midl_4x: position_1.pos_x + 25 * position_1.scale,
+		down_x: position_1.pos_x + 10 * position_1.scale,
+		down_y: position_1.pos_y + 30 * position_1.scale
+	};
+        noStroke();
+        fill(30, 144, 255);
+        triangle(diamond_1.up_1x, diamond_1.up_y, diamond_1.midl_2x, diamond_1.midl_y, diamond_1.up_2x, diamond_1.up_y);
+        triangle(diamond_1.up_2x, diamond_1.up_y, diamond_1.midl_3x, diamond_1.midl_y, diamond_1.up_3x, diamond_1.up_y);
+        fill(135, 206, 250);
+        triangle(diamond_1.midl_1x, diamond_1.midl_y, diamond_1.up_1x, diamond_1.up_y, diamond_1.midl_2x, diamond_1.midl_y);
+        triangle(diamond_1.midl_2x, diamond_1.midl_y, diamond_1.up_2x, diamond_1.up_y, diamond_1.midl_3x, diamond_1.midl_y);
+        triangle(diamond_1.midl_3x, diamond_1.midl_y, diamond_1.up_3x, diamond_1.up_y, diamond_1.midl_4x, diamond_1.midl_y);
+        fill(72, 61, 139);
+        triangle(diamond_1.midl_1x, diamond_1.midl_y, diamond_1.down_x, diamond_1.down_y, diamond_1.midl_2x, diamond_1.midl_y);
+        triangle(diamond_1.midl_3x, diamond_1.midl_y, diamond_1.down_x, diamond_1.down_y, diamond_1.midl_4x, diamond_1.midl_y);
+        fill(123, 104, 238);
+        triangle(diamond_1.midl_2x, diamond_1.midl_y, diamond_1.down_x, diamond_1.down_y, diamond_1.midl_3x, diamond_1.midl_y);
+        }
+        
+//    if (viewTime && textTimer < 50){
+//        fill('orange');
+//        textSize(50);
+//        text('Well done',random(50, width), random(height/2, height));
+//        textTimer +=1;
+//}
         moveLogic();
     
         fill(0);
@@ -828,7 +879,8 @@ function checkEnemy()
             gameChar_x = 75;
             gameChar_y = floorPos_y;
             isFalling = false;
-            isJumping = false;
+            isJumping = false; 
+            jumpSpeed = JUMPSPEED;
             health -= 1;
             stage = 3;
             clicks = 1;
